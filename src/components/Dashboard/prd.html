@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>System Flowchart Presentation</title>
+  <script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+    mermaid.initialize({ startOnLoad: true });
+  </script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    section {
+      page-break-after: always;
+      margin-bottom: 60px;
+    }
+    .mermaid {
+      background: #fff;
+      border: 1px solid #ccc;
+      padding: 20px;
+      border-radius: 10px;
+    }
+    h2 {
+      margin-top: 40px;
+    }
+  </style>
+</head>
+<body>
+
+  <section>
+    <h2>1. System Entry</h2>
+    <div class="mermaid">
+      graph TD
+        Start[User Accesses System] --> Auth{Authentication}
+        Auth -->|Successful| Dashboard[Main Dashboard]
+        Auth -->|Failed| Login[Login Screen]
+        Login -->|Retry| Auth
+    </div>
+  </section>
+
+  <section>
+    <h2>2. Dashboard Navigation</h2>
+    <div class="mermaid">
+      graph TD
+        Dashboard[Main Dashboard] --> LeadershipMetrics[View Leadership Metrics]
+        Dashboard --> HierarchyView[Access Hierarchy View]
+        Dashboard --> AppointmentMgmt[Appointment Management]
+        Dashboard --> UserAdmin[User Administration]
+    </div>
+  </section>
+
+  <section>
+    <h2>3. Leadership Metrics</h2>
+    <div class="mermaid">
+      graph TD
+        LeadershipMetrics --> ProvincialStats[Provincial Statistics]
+        LeadershipMetrics --> DistrictBreakdown[District Breakdown]
+        LeadershipMetrics --> VacancyReport[Vacancy Reports]
+        LeadershipMetrics --> AppointmentStatus[Appointment Status Overview]
+    </div>
+  </section>
+
+  <section>
+    <h2>4. Hierarchy Management</h2>
+    <div class="mermaid">
+      graph TD
+        HierarchyView --> ChiefProfiles[Chief Profiles]
+        HierarchyView --> HeadmenProfiles[Headmen Profiles]
+        HierarchyView --> VillageHeadProfiles[Village Head Profiles]
+
+        ChiefProfiles --> ViewChief[View Chief Details]
+        ViewChief --> EditChief[Edit Chief Information]
+        ViewChief --> ViewLineage[View Lineage Tree]
+        ViewChief --> ViewJurisdiction[View Jurisdictional Map]
+
+        HeadmenProfiles --> ViewHeadman[View Headman Details]
+        ViewHeadman --> EditHeadman[Edit Headman Information]
+        ViewHeadman --> ViewLineage
+        ViewHeadman --> ViewJurisdiction
+
+        VillageHeadProfiles --> ViewVillageHead[View Village Head Details]
+        ViewVillageHead --> EditVillageHead[Edit Village Head Information]
+        ViewVillageHead --> ViewLineage
+        ViewVillageHead --> ViewJurisdiction
+
+        ViewLineage --> TraceAncestry[Trace Ancestral Connections]
+        ViewLineage --> EditLineage[Edit Lineage Information]
+    </div>
+  </section>
+
+  <section>
+    <h2>5. Appointment Workflow</h2>
+    <div class="mermaid">
+      graph TD
+        AppointmentMgmt --> NewAppointment[Create New Appointment]
+        AppointmentMgmt --> PendingApprovals[View Pending Approvals]
+        AppointmentMgmt --> AppointmentHistory[View Appointment History]
+
+        NewAppointment --> SelectPosition{Select Position Type}
+        SelectPosition -->|Chief| ChiefAppointment[Chief Appointment Form]
+        SelectPosition -->|Headman| HeadmanAppointment[Headman Appointment Form]
+        SelectPosition -->|Village Head| VillageHeadAppointment[Village Head Appointment Form]
+
+        ChiefAppointment --> UploadDocuments[Upload Supporting Documents]
+        HeadmanAppointment --> UploadDocuments
+        VillageHeadAppointment --> UploadDocuments
+
+        UploadDocuments --> SubmitAppointment[Submit for Approval]
+        SubmitAppointment --> ApprovalWorkflow[Enter Approval Workflow]
+
+        ApprovalWorkflow --> LocalReview[Local Authority Review]
+        LocalReview -->|Approved| ProvincialReview[Provincial Review]
+        LocalReview -->|Rejected| RejectionNotice[Rejection Notice]
+
+        ProvincialReview -->|Approved| NationalReview[National Review]
+        ProvincialReview -->|Rejected| RejectionNotice
+
+        NationalReview -->|Approved| FinalApproval[Final Approval]
+        NationalReview -->|Rejected| RejectionNotice
+
+        FinalApproval --> GenerateCertificate[Generate Appointment Certificate]
+        FinalApproval --> UpdateSystem[Update Leadership Records]
+    </div>
+  </section>
+
+  <section>
+    <h2>6. User Admin & Access Control</h2>
+    <div class="mermaid">
+      graph TD
+        UserAdmin --> CreateUser[Create New User]
+        UserAdmin --> ManageRoles[Manage User Roles]
+        UserAdmin --> DeactivateUser[Deactivate User]
+
+        CreateUser --> AssignRole{Assign Role}
+        AssignRole -->|National Admin| NationalPermissions[Set National Permissions]
+        AssignRole -->|Provincial Officer| ProvincialPermissions[Set Provincial Permissions]
+        AssignRole -->|Local Representative| LocalPermissions[Set Local Permissions]
+
+        NationalPermissions --> SaveUser[Save User Profile]
+        ProvincialPermissions --> SaveUser
+        LocalPermissions --> SaveUser
+
+        subgraph AccessControl[Role-Based Access Control]
+            NationalAdmin[National Administrator]
+            ProvincialOfficer[Provincial Officer]
+            LocalRep[Local Leadership Representative]
+        end
+
+        NationalAdmin -->|Full Access| Dashboard
+        ProvincialOfficer -->|Provincial Level Access| Dashboard
+        LocalRep -->|Limited Local Access| Dashboard
+    </div>
+  </section>
+
+</body>
+</html>
