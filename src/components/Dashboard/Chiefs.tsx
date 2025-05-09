@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { getChiefs } from "../../lib/apiService";
 import { TraditionalLeader } from "../../lib/types";
-import { Chief } from "@/types/supabase";
 import {
   Card,
   CardHeader,
@@ -43,6 +42,8 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import ChiefsDetailsModal from "@/components/Dashboard/ChiefsDetailsModal";
+import { ChiefEditModal } from "@/components/Dashboard/ChiefEditModal";
+import { Snackbar } from "@/components/ui/snackbar";
 
 const Chiefs = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -54,10 +55,40 @@ const Chiefs = () => {
   const [selectedChief, setSelectedChief] = useState<TraditionalLeader | null>(
     null
   );
+  const [editingChief, setEditingChief] = useState<TraditionalLeader | null>(
+    null
+  );
 
   const [allChiefs, setAllChiefs] = useState<TraditionalLeader[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  // Add snackbar state
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: "",
+    variant: "default" as "default" | "success" | "error",
+  });
+
+  // Add function to show messages
+  const showMessage = (message: string, variant: "success" | "error") => {
+    setSnackbar({
+      open: true,
+      message,
+      variant,
+    });
+  };
+
+  const refreshChiefs = useCallback(async () => {
+    try {
+      const data = await getChiefs(
+        provinceFilter === "all" ? undefined : provinceFilter
+      );
+      setAllChiefs(data);
+    } catch (error) {
+      console.error("Error refreshing chiefs:", error);
+    }
+  }, [provinceFilter]);
 
   useEffect(() => {
     const fetchChiefs = async () => {
@@ -202,6 +233,15 @@ const Chiefs = () => {
           onClose={() => setSelectedChief(null)}
         />
       )}
+      {editingChief && (
+        <ChiefEditModal
+          chief={editingChief}
+          isOpen={!!editingChief}
+          onClose={() => setEditingChief(null)}
+          onUpdate={refreshChiefs}
+          onShowMessage={showMessage}
+        />
+      )}
 
       <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 px-6 pt-6">
@@ -275,12 +315,20 @@ const Chiefs = () => {
                     </span>
                   </TableCell>
                   <TableCell className="text-right">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => setSelectedChief(chief)}>
-                      View Details
-                    </Button>
+                    <div className="flex justify-end space-x-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setSelectedChief(chief)}>
+                        View Details
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setEditingChief(chief)}>
+                        Edit
+                      </Button>
+                    </div>
                   </TableCell>
                 </TableRow>
               ))}
@@ -345,6 +393,14 @@ const Chiefs = () => {
         </CardFooter>
       </Card>
       {renderExportModal()}
+      {/* Add Snackbar at the root level */}
+      <Snackbar
+        open={snackbar.open}
+        message={snackbar.message}
+        variant={snackbar.variant}
+        onClose={() => setSnackbar((prev) => ({ ...prev, open: false }))}
+        duration={3000}
+      />
     </div>
   );
 };

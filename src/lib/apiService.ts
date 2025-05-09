@@ -1,3 +1,4 @@
+import { handleChiefFileUpdate } from "./ftpUtils";
 import {
   LoginResponse,
   SignupResponse,
@@ -8,8 +9,8 @@ import {
   TraditionalArea,
 } from "./types";
 
-const BASE_URL = "https://tlssapi.soxfort.com ";
-
+const BASE_URL = "https://tlssapi.soxfort.com";
+//const BASE_URL = "http://localhost:3000";
 export const login = async (
   username: string,
   password: string
@@ -362,6 +363,402 @@ export const resetPassword = async (
     return await response.json();
   } catch (error) {
     console.error("Reset password error:", error);
+    throw error;
+  }
+};
+
+export const appointChief = async (
+  chief: Partial<TraditionalLeader>
+): Promise<{ message: string }> => {
+  try {
+    // Validate required fields
+    const requiredFields = [
+      "id_number",
+      "incumbent",
+      "district",
+      "province",
+      "chieftainship",
+      "gender",
+      "dateofbirth",
+      "dateofappointment",
+      "status",
+    ];
+
+    const missingFields = requiredFields.filter((field) => !chief[field]);
+    if (missingFields.length > 0) {
+      throw new Error(`Missing required fields: ${missingFields.join(", ")}`);
+    }
+
+    // Format the data to match API expectations
+    const formattedChief = {
+      chief_id: chief.id_number,
+      id_number: chief.id_number,
+      incumbent: chief.incumbent,
+      district: chief.district,
+      province: chief.province,
+      chieftainship: chief.chieftainship,
+      mutupo: chief.mutupo || "",
+      ecnumber: chief.ecnumber || null,
+      gender: chief.gender,
+      dateofbirth: chief.dateofbirth,
+      dateofappointment: chief.dateofappointment,
+      status: chief.status,
+      bank: chief.bank || null,
+      accountnumber: chief.accountnumber || null,
+      contactnumber: chief.contactnumber || "",
+      nextofkin: chief.nextofkin || null,
+      biosignature: chief.biosignature || null,
+      picture: chief.picture || null,
+      spouses: chief.spouses || null,
+      offspring: chief.offspring || null,
+      car_reg_no: chief.car_reg_no || null,
+      dateofissue: chief.dateofissue || null,
+      dateofdeathorremoval: chief.dateofdeathorremoval || null,
+      physicalladdress: chief.physicalladdress || "",
+      relationshiptolastincumbent: chief.relationshiptolastincumbent || null,
+      lastincumbentname: chief.lastincumbentname || null,
+      lastincumbentidnumber: chief.lastincumbentidnumber || null,
+      dateofvacancy: chief.dateofvacancy || null,
+      reasonofvacancy: chief.reasonofvacancy || null,
+      personalattributesandqualifications:
+        chief.personalattributesandqualifications || null,
+      disagreements: chief.disagreements || null,
+      otherinfo: chief.otherinfo || null,
+      recommendationsfromheadman: chief.recommendationsfromheadman || null,
+    };
+
+    console.log("Formatted chief data:", formattedChief); // Debugging line
+
+    const response = await fetch(`${BASE_URL}/appoint/chiefs`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+      body: JSON.stringify(formattedChief),
+    });
+
+    if (!response.ok) {
+      const errorData: ErrorResponse = await response.json();
+      throw new Error(errorData.message || "Failed to appoint chief");
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error appointing chiefs:", error);
+    throw error;
+  }
+};
+
+export const appointHeadman = async (
+  headman: Partial<TraditionalLeader>
+): Promise<{ message: string }> => {
+  try {
+    // Validate required fields
+    const requiredFields = [
+      "id_number",
+      "incumbent",
+      "district",
+      "province",
+      "chieftainship",
+      "headmanship",
+      "gender",
+      "dateofbirth",
+      "dateofappointment",
+      "status",
+    ];
+
+    const missingFields = requiredFields.filter((field) => !headman[field]);
+    if (missingFields.length > 0) {
+      throw new Error(`Missing required fields: ${missingFields.join(", ")}`);
+    }
+
+    // Format the data to match API expectations
+    const formattedHeadman = {
+      headman_id: headman.id_number,
+      id_number: headman.id_number,
+      incumbent: headman.incumbent,
+      district: headman.district,
+      province: headman.province,
+      chieftainship: headman.chieftainship,
+      headmanship: headman.headmanship,
+      mutupo: headman.mutupo || "",
+      ecnumber: headman.ecnumber || null,
+      gender: headman.gender,
+      dateofbirth: headman.dateofbirth,
+      dateofappointment: headman.dateofappointment,
+      status: headman.status,
+      bank: headman.bank || null,
+      accountnumber: headman.accountnumber || null,
+      contactnumber: headman.contactnumber || "",
+      nextofkin: headman.nextofkin || null,
+      biosignature: headman.biosignature || null,
+      picture: headman.picture || null,
+      spouses: headman.spouses || null,
+      offspring: headman.offspring || null,
+      dateofissue: headman.dateofissue || null,
+      dateofdeathorremoval: headman.dateofdeathorremoval || null,
+      physicalladdress: headman.physicalladdress || "",
+      relationshiptolastincumbent: headman.relationshiptolastincumbent || null,
+      lastincumbentname: headman.lastincumbentname || null,
+      lastincumbentidnumber: headman.lastincumbentidnumber || null,
+      dateofvacancy: headman.dateofvacancy || null,
+      reasonofvacancy: headman.reasonofvacancy || null,
+      personalattributesandqualifications:
+        headman.personalattributesandqualifications || null,
+      disagreements: headman.disagreements || null,
+      otherinfo: headman.otherinfo || null,
+      recommendationsfromchief: headman.recommendationsfromchief || null,
+      supporting_document_ddc: headman.supporting_document_ddc || null,
+    };
+
+    const response = await fetch(`${BASE_URL}/appoint/headman`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+      body: JSON.stringify(formattedHeadman),
+    });
+
+    if (!response.ok) {
+      const errorData: ErrorResponse = await response.json();
+      throw new Error(errorData.message || "Failed to appoint headman");
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error appointing headman:", error);
+    throw error;
+  }
+};
+
+export const appointVillageHead = async (
+  villageHead: Partial<TraditionalLeader>
+): Promise<{ message: string }> => {
+  try {
+    // Validate required fields
+    const requiredFields = [
+      "id_number",
+      "incumbent",
+      "district",
+      "province",
+      "chieftainship",
+      "headmanship",
+      "villagemanship",
+      "gender",
+      "dateofbirth",
+      "dateofappointment",
+      "status",
+    ];
+
+    const missingFields = requiredFields.filter((field) => !villageHead[field]);
+    if (missingFields.length > 0) {
+      throw new Error(`Missing required fields: ${missingFields.join(", ")}`);
+    }
+
+    // Format the data to match API expectations
+    const formattedVillageHead = {
+      villagehead_id: villageHead.id_number,
+      id_number: villageHead.id_number,
+      incumbent: villageHead.incumbent,
+      district: villageHead.district,
+      province: villageHead.province,
+      chieftainship: villageHead.chieftainship,
+      headmanship: villageHead.headmanship,
+      villagemanship: villageHead.villagemanship,
+      mutupo: villageHead.mutupo || "",
+      ecnumber: villageHead.ecnumber || null,
+      gender: villageHead.gender,
+      dateofbirth: villageHead.dateofbirth,
+      dateofappointment: villageHead.dateofappointment,
+      status: villageHead.status,
+      spouses: villageHead.spouses || null,
+      physicalladdress: villageHead.physicalladdress || "",
+      relationshiptolastincumbent:
+        villageHead.relationshiptolastincumbent || null,
+      lastincumbentname: villageHead.lastincumbentname || null,
+      lastincumbentidnumber: villageHead.lastincumbentidnumber || null,
+      dateofvacancy: villageHead.dateofvacancy || null,
+      reasonofvacancy: villageHead.reasonofvacancy || null,
+      personalattributesandqualifications:
+        villageHead.personalattributesandqualifications || null,
+      disagreements: villageHead.disagreements || null,
+      otherinfo: villageHead.otherinfo || null,
+      recommendationsfromchief: villageHead.recommendationsfromchief || null,
+      recommendationsfromheadman:
+        villageHead.recommendationsfromheadman || null,
+      supporting_document_ddc: villageHead.supporting_document_ddc || null,
+    };
+    console.log("Formatted village head data:", formattedVillageHead); // Debugging line
+
+    const response = await fetch(`${BASE_URL}/appoint/villagehead`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+      body: JSON.stringify(formattedVillageHead),
+    });
+
+    if (!response.ok) {
+      const errorData: ErrorResponse = await response.json();
+      throw new Error(errorData.message || "Failed to appoint village head");
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error appointing village head:", error);
+    throw error;
+  }
+};
+
+export const getMonthlyAppointments = async (): Promise<{
+  chiefs: TraditionalLeader[];
+  headmen: TraditionalLeader[];
+  villageheads: TraditionalLeader[];
+}> => {
+  try {
+    const currentDate = new Date();
+    const firstDayOfMonth = new Date(
+      currentDate.getFullYear(),
+      currentDate.getMonth(),
+      1
+    );
+    const lastDayOfMonth = new Date(
+      currentDate.getFullYear(),
+      currentDate.getMonth() + 1,
+      0
+    );
+
+    // Format dates for API
+    const startDate = firstDayOfMonth.toISOString().split("T")[0];
+    const endDate = lastDayOfMonth.toISOString().split("T")[0];
+
+    // Change endpoints to match your cloud API routes
+    const [chiefs, headmen, villageheads] = await Promise.all([
+      fetch(`${BASE_URL}/chiefs?startDate=${startDate}&endDate=${endDate}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      }).then((res) => res.json()),
+      fetch(`${BASE_URL}/headmen?startDate=${startDate}&endDate=${endDate}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      }).then((res) => res.json()),
+      fetch(
+        `${BASE_URL}/villageheads?startDate=${startDate}&endDate=${endDate}`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      ).then((res) => res.json()),
+    ]);
+
+    return { chiefs, headmen, villageheads };
+  } catch (error) {
+    console.error("Error fetching monthly appointments:", error);
+    throw error;
+  }
+};
+
+// Add this function to handle file uploads
+export const updateChiefFiles = async (
+  chiefId: string,
+  files: { picture?: File; recommendationsfromheadman?: File },
+  currentFilePath?: string
+): Promise<{
+  picture?: string;
+  recommendationsfromheadman?: string;
+}> => {
+  try {
+    const formData = new FormData();
+    if (files.picture) {
+      formData.append("picture", files.picture);
+    }
+    if (files.recommendationsfromheadman) {
+      formData.append(
+        "recommendationsfromheadman",
+        files.recommendationsfromheadman
+      );
+    }
+    // Add current filepath if exists
+    if (currentFilePath) {
+      formData.append("currentFilePath", currentFilePath);
+    }
+
+    const uploadResults: {
+      picture?: string;
+      recommendationsfromheadman?: string;
+    } = {};
+
+    // Handle picture upload
+    if (files.picture) {
+      const picturePath = await handleChiefFileUpdate(
+        files.picture,
+        "picture",
+        currentFilePath
+      );
+      uploadResults.picture = picturePath;
+    }
+
+    // Handle recommendations upload
+    if (files.recommendationsfromheadman) {
+      const recommendationsPath = await handleChiefFileUpdate(
+        files.recommendationsfromheadman,
+        "recommendationsfromheadman",
+        currentFilePath
+      );
+      uploadResults.recommendationsfromheadman = recommendationsPath;
+    }
+
+    // Update database with new file paths
+    const response = await fetch(`${BASE_URL}/chiefs/${chiefId}/documents`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+      body: JSON.stringify(uploadResults),
+    });
+
+    if (!response.ok) {
+      const errorData: ErrorResponse = await response.json();
+      throw new Error(errorData.message || "Failed to update file paths");
+    }
+
+    return uploadResults;
+  } catch (error) {
+    console.error("Error updating chief files:", error);
+    throw error;
+  }
+};
+
+// Add this function to update chief data
+export const updateChief = async (
+  chiefId: string,
+  data: Partial<TraditionalLeader>
+): Promise<{ message: string }> => {
+  try {
+    const response = await fetch(`${BASE_URL}/chiefs/${chiefId}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+      body: JSON.stringify(data),
+    });
+
+    if (!response.ok) {
+      const errorData: ErrorResponse = await response.json();
+      throw new Error(errorData.message || "Failed to update chief");
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error updating chief:", error);
     throw error;
   }
 };

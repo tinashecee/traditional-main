@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Network Diagram</title>
+    <script src="https://www.draw.io/js/viewer.min.js"></script>
+    <style>
+        body { margin: 0; }
+        #diagramContainer {
+            width: 100vw;
+            height: 100vh;
+            border: 1px solid #ccc;
+        }
+    </style>
+    <script>
+        // Draw.io diagram XML
+        const xml = `
+<mxfile>
+  <diagram id="0" name="Page-1">
+    <mxGraphModel dx="1426" dy="794" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="mediaConverter1" value="Media Converter&lt;br&gt;&lt;font style=&quot;font-size: 10px&quot;&gt;Telone ZX1912B34SA0819&lt;/font&gt;" style="shape=image;verticalLabelPosition=bottom;labelBackgroundColor=#ffffff;verticalAlign=top;aspect=fixed;imageAspect=0;image=data:image/svg+xml,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj48cGF0aCBkPSJNNDY0IDY0aC00OFYxNmMwLTguODM2LTcuMTYzLTE2LTE2LTE2SDExMmMtOC44MzcgMC0xNiA3LjE2NC0xNiAxNnY0OEg0OGMtMjYuNTEgMC00OCAyMS40OS00OCA0OHYyODhjMCAyNi41MSAyMS40OSA৪৮aDQxNmMw ২6.৫১ ০ ৪৮-২১.৪৯ ৪৮-৪৮V১১২c০-২6.৫১-২১.৪৯-৪৮-৪৮-৪৮তম-৯৬ ০১৪৪V৩২h২২৪v৩২zM৪৬৪ ৪০০c০ ৮.৮৩৬-৭.১৬৩ ১৬-১৬ ১৬H৪৮c-৮.৮৩৭ ০-১৬-৭.১৬৪-১৬-১৬V১১২c০-৮.৮৩৬ ৭.১৬৩-১৬ ১৬-১৬h৪১৬c৮.৮৩৭ ০ ১৬ ৭.১৬৪ ১৬ ১৬v২৮OHoiLz48L3N2z4=;" vertex="1" parent="1">
+          <mxGeometry x="100" y="200" width="80" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="sophos" value="&lt;b&gt;Sophos XGS 3100&lt;/b&gt;" style="shape=image;verticalLabelPosition=bottom;labelBackgroundColor=#ffffff;verticalAlign=top;aspect=fixed;imageAspect=0;image=data:image/svg+xml,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA5MTIgNTEyIj48cGF0aCBkPSJNNDY0IDY0aC0০ ৪৮V১NmMw-৮.৮৩৬-৭.১৬৩-১৬-১৬-১৬SD১১২c-৮.৮৩৭ ০-১৬ ৭.১৬৪-১৬ ১N৬v৪৮H৪৮c-২6.৫১ ০-৪৮ ২N.৪৯-৪৮ ৪৮v২৮Oc০ ২6.৫১ ২N.৪৯ ৪৮ ৪৮ ৪৪৮h৪১৬c২6.৫১ ০ ৪৮-২১.৪৯ ৪৮-৪৮V১১২c০-২6.৫১-২১.৪৯-৪৮-৪৮-৪৮তম-৯৬ ০১৪৪V৩২h২২৪v৩২zM৪৬৪ ৪০০c০ ৮.৮৩৬-৭.১৬৩ ১৬-১৬ ১৬H৪৮c-৮.৮৩৭ ০-১৬-৭.১৬৪-১৬-১৬V১১২c০-৮.৮৩৬ ৭.১৬৩-১৬ ১৬-১৬h৪১৬c৮.৮৩৭ ০ ১৬ ৭.১৬৪ ১৬ ১৬v২৮OHoiLz48L3N2z4=;" vertex="1" parent="1">
+          <mxGeometry x="300" y="180" width="100" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="cisco4300" value="&lt;b&gt;Cisco 4300&lt;br&gt;Series Router&lt;/b&gt;" style="shape=image;verticalLabelPosition=bottom;labelBackgroundColor=#ffffff;verticalAlign=top;aspect=fixed;imageAspect=0;image=data:image/svg+xml,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA৫১২ ৫১২Ij48cGFথ d="M৪৬৪ ৬৪h-৪৮V১NmM০-৮.৮৩৬-৭.১৬৩-১৬-১৬-১৬SD১১২c-৮.৮৩৭ ০-১৬ ৭.১৬৪-১৬ ১N৬v৪৮H৪৮c-২6.৫১ ০-৪৮ ২N.৪৯-৪৮ ৪৮v২৮Oc০ ২6.৫১ ২N.৪৯ ৪৮ ৪৮ ৪৪৮h৪১৬c২6.৫১ ০ ৪৮-২১.৪৯ ৪৮-৪৮V১১২c০-২6.৫১-২১.৪৯-৪৮-৪৮-৪৮তম-৯৬ ০১৪৪V৩২h২২৪v৩২zM৪৬৪ ৪০০c০ ৮.৮৩৬-৭.১৬৩ ১৬-১৬ ১৬H৪৮c-৮.৮৩৭ ০-১৬-৭.১৬৪-১৬-১৬V১১২c০-৮.৮৩৬ ৭.১৬৩-১৬ ১৬-১৬h৪১৬c৮.৮৩৭ ০ ১৬ ৭.১৬৪ ১৬ ১৬v২৮OHoiLz48L3N2z4=" vertex="1" parent="1">
+          <mxGeometry x="500" y="180" width="100" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="catalyst1000" value="&lt;b&gt;Cisco Catalyst&lt;br&gt;1000 Series&lt;/b&gt;" style="shape=image;verticalLabelPosition=bottom;labelBackgroundColor=#ffffff;verticalAlign=top;aspect=fixed;imageAspect=0;image=data:image/svg+xml,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy5wMy5vcmcvz00wL3N2z0i viewBox="0 0 512 512"><path d="M464 64h-48V16c0-8.836-7.163-16-16-16H112c-8.837 0-16 7.164-16 16v48H48c-26.51 0-48 21.49-48 48v288c0 26.51 21.49 48 48 48h416c26.51 0 48-21.49 48-48V112c0-26.51-21.49-48-48-48zm-96 0H144V32h224v32zM464 400c0 8.836-7.163 16-16 16H48c-8.837 0-16-7.164-16-16V112c0-8.836 7.163-16 16-16h416c8.837 0 16 7.164 16 16v288z"/></svg>" vertex="1" parent="1">
+          <mxGeometry x="700" y="180" width="100" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="mediaConverter2" value="Media Converter&lt;br&gt;&lt;font style=&quot;font-size: 10px&quot;&gt;CCS 202311280238&lt;/font&gt;" style="shape=image;verticalLabelPosition=bottom;labelBackgroundColor=#ffffff;verticalAlign=top;aspect=fixed;imageAspect=0;image=data:image/svg+xml,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy5wMy5vcmcvz00wL3N2z0i viewBox="0 0 512 512"><path d="M464 64h-48V16c0-8.836-7.163-16-16-16H112c-8.837 0-16 7.164-16 16v48H48c-26.51 0-48 21.49-48 48v288c0 26.51 21.49 48 48 48h416c26.51 0 48-21.49 48-48V112c0-26.51-21.49-48-48-48zm-96 0H144V32h224v32zM464 400c0 8.836-7.163 16-16 16H48c-8.837 0-16-7.164-16-16V112c0-8.836 7.163-16 16-16h416c8.837 0 16 7.164 16 16v288z"/></svg>" vertex="1" parent="1">
+          <mxGeometry x="100" y="350" width="80" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="floor6switch" value="&lt;b&gt;6th Floor Switch&lt;/b&gt;" style="shape=image;verticalLabelPosition=bottom;labelBackgroundColor=#ffffff;verticalAlign=top;aspect=fixed;imageAspect=0;image=data:image/svg+xml,PHN2Zy  viewBox="0 0 912 912"><path d="M464 64h-48V16c0-8.836-7.163-16-16-16H112c-8.837 0-16 7.164-16 16v48H48c-26.51 0-48 21.49-48 48v288c0 26.51 21.49 48 48 48h416c26.51 0 48-21.49 48-48V112c0-26.51-21.49-48-48-48zm-96 0H144V32h224v32zM464 400c0 8.836-7.163 16-16 16H48c-8.837 0-16-7.164-16-16V112c0-8.836 7.163-16 16-16h416c8.837 0 16 7.164 16 16v288z"/></svg>" vertex="1" parent="1">
+          <mxGeometry x="300" y="350" width="80" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="groundFloor" value="&lt;b&gt;Ground Floor&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="700" y="300" width="100" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="floor1" value="&lt;b&gt;1st Floor&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="700" y="350" width="100" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="floor2" value="&lt;b&gt;2nd Floor&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="700" y="400" width="100" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="floor3" value="&lt;b&gt;3rd Floor&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="700" y="450" width="100" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="conn1" value="Port2/WAN" style="edgeStyle=none;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;endArrow=classic;endFill=1;" edge="1" parent="1" source="mediaConverter1" target="sophos">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="conn2" value="SFP F4 → GE0/0/2" style="edgeStyle=none;html=1;rounded=0;exitX=1;exitY=0.25;exitDx=0;exitDy=0;entryX=0;entryY=0.25;entryDx=0;entryDy=0;endArrow=classic;endFill=1;" edge="1" parent="1" source="sophos" target="cisco4300">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="conn3" value="GE0/0/1" style="edgeStyle=none;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;endArrow=classic;endFill=1;" edge="1" parent="1" source="mediaConverter2" target="cisco4300">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="conn4" value="GE0/0/0 → Port23" style="edgeStyle=none;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;endArrow=classic;endFill=1;" edge="1" parent="1" source="cisco4300" target="catalyst1000">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="conn5" value="Port6" style="edgeStyle=none;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;endArrow=classic;endFill=1;" edge="1" parent="1" source="sophos" target="floor6switch">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="conn6" value="Port25" style="edgeStyle=none;html=1;rounded=0;exitX=0.25;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;endArrow=classic;endFill=1;" edge="1" parent="1" source="catalyst1000" target="groundFloor">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="conn7" value="Port26" style="edgeStyle=none;html=1;rounded=0;exitX=0.4;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;endArrow=classic;endFill=1;" edge="1" parent="1" source="catalyst1000" target="floor1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="conn8" value="Port27" style="edgeStyle=none;html=1;rounded=0;exitX=0.6;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;endArrow=classic;endFill=1;" edge="1" parent="1" source="catalyst1000" target="floor2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="conn9" value="Port28" style="edgeStyle=none;html=1;rounded=0;exitX=0.75;exitY=1;exitDx=0;exitDy=0;endArrow=classic;endFill=1;" edge="1" parent="1" source="catalyst1000" target="floor3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
+        `;
+
+        // Function to render the diagram
+        function renderDiagram() {
+            const container = document.getElementById('diagramContainer');
+            if (!container) {
+                console.error('Diagram container element not found');
+                return;
+            }
+            container.innerHTML = ''; // Clear previous content
+
+            try {
+                const doc = mxUtils.parseXml(xml);
+                const model = new mxGraphModel();
+                const graph = new mxGraph(container, model);
+                const codec = new mxCodec(doc);
+
+                codec.decode(doc.documentElement, model);
+                graph.setCellsEditable(false);
+                graph.setCellsMovable(false);
+                graph.setCellsSelectable(false);
+                graph.setEdgeLabelsMovable(false);
+                graph.setVertexLabelsMovable(false);
+
+                // Fit diagram to the container
+                const bounds = graph.getGraphBounds();
+                const scale = Math.min(
+                    container.clientWidth / bounds.width,
+                    container.clientHeight / bounds.height
+                );
+                graph.getView().setScale(scale);
+                graph.getView().setTranslate(
+                    (container.clientWidth / 2 - bounds.width * scale / 2) / scale,
+                    (container.clientHeight / 2 - bounds.height * scale / 2) / scale
+                );
+            } catch (error) {
+                console.error('Error rendering diagram:', error);
+                container.innerHTML = `<div style="color: red; padding: 10px;">Error rendering diagram: ${error.message}</div>`;
+            }
+        }
+
+        // Render the diagram on window load
+        window.onload = renderDiagram;
+
+        // Optional: Render diagram on resize to maintain responsiveness
+        window.addEventListener('resize', renderDiagram);
+    </script>
+</body>
+</html>

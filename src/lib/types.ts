@@ -85,4 +85,7 @@ export interface TraditionalLeader {
   disagreements?: string;
   otherinfo?: string;
   recommendationsfromheadman?: string;
+  recommendationsfromchief?: string;
+  supporting_document_ddc?: string;
+  appointed_by?: string;
 }
