@@ -135,3 +135,79 @@ export async function handleVillageHeadFileUpload(
     throw error;
   }
 }
+
+export async function handleHeadmanFileUpdate(
+  file: File,
+  fileType: "picture" | "recommendationsfromchief" | "supporting_document_ddc",
+  currentFilePath?: string
+): Promise<string> {
+  const formData = new FormData();
+  formData.append("file", file);
+  formData.append("fileType", fileType);
+  if (currentFilePath) {
+    formData.append("currentFilePath", currentFilePath);
+  }
+
+  try {
+    const response = await fetch(
+      `http://localhost:3001/upload/headman-update`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: formData,
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("Upload failed");
+    }
+
+    const data = await response.json();
+    return data.filePath;
+  } catch (error) {
+    console.error("Upload error:", error);
+    throw error;
+  }
+}
+
+export async function handleVillageHeadFileUpdate(
+  file: File,
+  fileType:
+    | "picture"
+    | "recommendationsfromchief"
+    | "recommendationsfromheadman"
+    | "supporting_document_ddc",
+  currentFilePath?: string
+): Promise<string> {
+  const formData = new FormData();
+  formData.append("file", file);
+  formData.append("fileType", fileType);
+  if (currentFilePath) {
+    formData.append("currentFilePath", currentFilePath);
+  }
+
+  try {
+    const response = await fetch(
+      `http://localhost:3001/upload/villagehead-update`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: formData,
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("Upload failed");
+    }
+
+    const data = await response.json();
+    return data.filePath;
+  } catch (error) {
+    console.error("Upload error:", error);
+    throw error;
+  }
+}

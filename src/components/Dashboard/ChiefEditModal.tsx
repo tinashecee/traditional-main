@@ -280,6 +280,14 @@ export function ChiefEditModal({
               onSave={(value) => handleSave("status", value)}
               onCancel={() => setEditingField(null)}
             />
+            <FileField
+              label="Picture"
+              value={chief.picture}
+              onEdit={() => setEditingField("picture")}
+              isEditing={editingField === "picture"}
+              onSave={(value) => handleSave("picture", value)}
+              onCancel={() => setEditingField(null)}
+            />
             <div>
               <h3 className="font-semibold mb-4">Basic Information</h3>
               <div className="space-y-2">
@@ -315,14 +323,6 @@ export function ChiefEditModal({
                   onEdit={() => setEditingField("gender")}
                   isEditing={editingField === "gender"}
                   onSave={(value) => handleSave("gender", value)}
-                  onCancel={() => setEditingField(null)}
-                />
-                <FileField
-                  label="Picture"
-                  value={chief.picture}
-                  onEdit={() => setEditingField("picture")}
-                  isEditing={editingField === "picture"}
-                  onSave={(value) => handleSave("picture", value)}
                   onCancel={() => setEditingField(null)}
                 />
               </div>

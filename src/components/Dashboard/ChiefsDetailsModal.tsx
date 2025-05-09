@@ -27,7 +27,7 @@ const ChiefsDetailsModal: React.FC<ChiefsDetailsModalProps> = ({
         <DialogHeader className="sticky top-0 bg-background z-10">
           <DialogTitle>Chief Details</DialogTitle>
         </DialogHeader>
-        <div className="grid grid-cols-2 gap-6">
+        <div className="grid grid-cols-3 gap-6">
           {/* Chief Picture */}
           <div className="space-y-2">
             <h3 className="font-semibold">Chief Picture</h3>
@@ -44,36 +44,6 @@ const ChiefsDetailsModal: React.FC<ChiefsDetailsModalProps> = ({
                 <div className="w-full h-[200px] bg-gray-100 rounded-lg flex items-center justify-center">
                   <span className="text-gray-500">No picture available</span>
                 </div>
-              )}
-            </div>
-          </div>
-
-          {/* Recommendations Document */}
-          <div className="space-y-2">
-            <h3 className="font-semibold">Recommendations from Headman</h3>
-            <div className="border rounded-lg p-4 h-[200px] flex items-center justify-center">
-              {chief.recommendationsfromheadman ? (
-                <a
-                  href={`http://137.184.221.205/${chief.recommendationsfromheadman}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex flex-col items-center gap-2 text-blue-600 hover:text-blue-800">
-                  <svg
-                    className="w-12 h-12"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24">
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                    />
-                  </svg>
-                  <span>View Document</span>
-                </a>
-              ) : (
-                <span className="text-gray-500">No document available</span>
               )}
             </div>
           </div>
@@ -190,6 +160,42 @@ const ChiefsDetailsModal: React.FC<ChiefsDetailsModalProps> = ({
               <div className="col-span-2 space-y-2">
                 <Label>Offspring</Label>
                 <Input value={chief.offspring || "N/A"} readOnly />
+              </div>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader>
+              <CardTitle>Additional Information</CardTitle>
+            </CardHeader>
+            <CardContent className="grid grid-cols-2 gap-4">
+              {/* Recommendations Document */}
+              <div className="space-y-2">
+                <h3 className="font-semibold">Recommendations from Headman</h3>
+                <div className="border rounded-lg p-4 h-[200px] flex items-center justify-center">
+                  {chief.recommendationsfromheadman ? (
+                    <a
+                      href={`http://137.184.221.205/${chief.recommendationsfromheadman}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex flex-col items-center gap-2 text-blue-600 hover:text-blue-800">
+                      <svg
+                        className="w-12 h-12"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24">
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                        />
+                      </svg>
+                      <span>View Document</span>
+                    </a>
+                  ) : (
+                    <span className="text-gray-500">No document available</span>
+                  )}
+                </div>
               </div>
             </CardContent>
           </Card>

@@ -120,6 +120,52 @@ app.post(
   }
 );
 
+app.post("/upload/headman-update", upload.single("file"), async (req, res) => {
+  const client = new Client();
+
+  try {
+    await client.access(ftpConfig);
+
+    const { fileType, currentFilePath } = req.body;
+    const file = req.file;
+
+    if (!file || !fileType) {
+      return res.status(400).json({ error: "File and file type are required" });
+    }
+
+    // Delete old file if path was provided
+    if (currentFilePath) {
+      try {
+        await client.remove(currentFilePath);
+        console.log(`Old file removed: ${currentFilePath}`);
+      } catch (err) {
+        console.error(`Error removing old file: ${currentFilePath}`, err);
+      }
+    }
+
+    const timestamp = Date.now();
+    const fileName = `${timestamp}-${fileType}-${file.originalname}`;
+    const remotePath = `/uploads/${fileName}`;
+
+    // Upload new file
+    await client.uploadFrom(file.path, remotePath);
+    console.log(`New file uploaded to: ${remotePath}`);
+
+    res.json({
+      success: true,
+      filePath: remotePath,
+    });
+  } catch (err) {
+    console.error("Upload error:", err);
+    res.status(500).json({
+      error: "File upload failed",
+      details: err.message,
+    });
+  } finally {
+    client.close();
+  }
+});
+
 // Village head documents upload endpoint
 app.post(
   "/upload/villagehead",
@@ -236,6 +282,59 @@ app.post("/upload/chief-update", upload.single("file"), async (req, res) => {
     client.close();
   }
 });
+
+// Add villagehead file update endpoint
+app.post(
+  "/upload/villagehead-update",
+  upload.single("file"),
+  async (req, res) => {
+    const client = new Client();
+
+    try {
+      await client.access(ftpConfig);
+
+      const { fileType, currentFilePath } = req.body;
+      const file = req.file;
+
+      if (!file || !fileType) {
+        return res
+          .status(400)
+          .json({ error: "File and file type are required" });
+      }
+
+      // Delete old file if path was provided
+      if (currentFilePath) {
+        try {
+          await client.remove(currentFilePath);
+          console.log(`Old file removed: ${currentFilePath}`);
+        } catch (err) {
+          console.error(`Error removing old file: ${currentFilePath}`, err);
+        }
+      }
+
+      const timestamp = Date.now();
+      const fileName = `${timestamp}-${fileType}-${file.originalname}`;
+      const remotePath = `/uploads/${fileName}`;
+
+      // Upload new file
+      await client.uploadFrom(file.path, remotePath);
+      console.log(`New file uploaded to: ${remotePath}`);
+
+      res.json({
+        success: true,
+        filePath: remotePath,
+      });
+    } catch (err) {
+      console.error("Upload error:", err);
+      res.status(500).json({
+        error: "File upload failed",
+        details: err.message,
+      });
+    } finally {
+      client.close();
+    }
+  }
+);
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {

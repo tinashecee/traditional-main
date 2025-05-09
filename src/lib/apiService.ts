@@ -1,4 +1,8 @@
-import { handleChiefFileUpdate } from "./ftpUtils";
+import {
+  handleChiefFileUpdate,
+  handleHeadmanFileUpdate,
+  handleVillageHeadFileUpdate,
+} from "./ftpUtils";
 import {
   LoginResponse,
   SignupResponse,
@@ -208,7 +212,7 @@ export const getHeadmen = async (
   province?: string
 ): Promise<TraditionalLeader[]> => {
   try {
-    const url = new URL(`${BASE_URL}/headman`);
+    const url = new URL(`${BASE_URL}/headmen`);
     if (province) {
       url.searchParams.append("province", province);
     }
@@ -759,6 +763,219 @@ export const updateChief = async (
     return await response.json();
   } catch (error) {
     console.error("Error updating chief:", error);
+    throw error;
+  }
+};
+
+// Add this function to update headman data
+export const updateHeadman = async (
+  headmanId: string,
+  data: Partial<TraditionalLeader>
+): Promise<{ message: string }> => {
+  try {
+    const response = await fetch(`${BASE_URL}/headmen/${headmanId}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+      body: JSON.stringify(data),
+    });
+
+    if (!response.ok) {
+      const errorData: ErrorResponse = await response.json();
+      throw new Error(errorData.message || "Failed to update headman");
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error updating headman:", error);
+    throw error;
+  }
+};
+export const updateHeadmanFiles = async (
+  headmanId: string,
+  files: {
+    picture?: File;
+    recommendationsfromchief?: File;
+    supporting_document_ddc?: File;
+  },
+  currentFilePath?: string
+): Promise<{
+  picture?: string;
+  recommendationsfromchief?: string;
+  supporting_document_ddc?: string;
+}> => {
+  try {
+    const uploadResults: {
+      picture?: string;
+      recommendationsfromchief?: string;
+      supporting_document_ddc?: string;
+    } = {};
+
+    // Handle picture upload
+    if (files.picture) {
+      const picturePath = await handleHeadmanFileUpdate(
+        files.picture,
+        "picture",
+        currentFilePath
+      );
+      uploadResults.picture = picturePath;
+    }
+
+    // Handle recommendations upload
+    if (files.recommendationsfromchief) {
+      const recommendationsPath = await handleHeadmanFileUpdate(
+        files.recommendationsfromchief,
+        "recommendationsfromchief",
+        currentFilePath
+      );
+      uploadResults.recommendationsfromchief = recommendationsPath;
+    }
+
+    // Handle supporting document upload
+    if (files.supporting_document_ddc) {
+      const supportingDocPath = await handleHeadmanFileUpdate(
+        files.supporting_document_ddc,
+        "supporting_document_ddc",
+        currentFilePath
+      );
+      uploadResults.supporting_document_ddc = supportingDocPath;
+    }
+
+    // Update database with new file paths
+    const response = await fetch(`${BASE_URL}/headmen/${headmanId}/documents`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+      body: JSON.stringify(uploadResults),
+    });
+
+    if (!response.ok) {
+      const errorData: ErrorResponse = await response.json();
+      throw new Error(errorData.message || "Failed to update file paths");
+    }
+
+    return uploadResults;
+  } catch (error) {
+    console.error("Error updating headman files:", error);
+    throw error;
+  }
+};
+
+// Add this function to update village head data
+export const updateVillageHead = async (
+  villageHeadId: string,
+  data: Partial<TraditionalLeader>
+): Promise<{ message: string }> => {
+  try {
+    const response = await fetch(`${BASE_URL}/villageheads/${villageHeadId}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+      body: JSON.stringify(data),
+    });
+
+    if (!response.ok) {
+      const errorData: ErrorResponse = await response.json();
+      throw new Error(errorData.message || "Failed to update village head");
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error updating village head:", error);
+    throw error;
+  }
+};
+
+export const updateVillageHeadFiles = async (
+  villageHeadId: string,
+  files: {
+    picture?: File;
+    recommendationsfromchief?: File;
+    recommendationsfromheadman?: File;
+    supporting_document_ddc?: File;
+  },
+  currentFilePath?: string
+): Promise<{
+  picture?: string;
+  recommendationsfromchief?: string;
+  recommendationsfromheadman?: string;
+  supporting_document_ddc?: string;
+}> => {
+  try {
+    const uploadResults: {
+      picture?: string;
+      recommendationsfromchief?: string;
+      recommendationsfromheadman?: string;
+      supporting_document_ddc?: string;
+    } = {};
+
+    // Handle picture upload
+    if (files.picture) {
+      const picturePath = await handleVillageHeadFileUpdate(
+        files.picture,
+        "picture",
+        currentFilePath
+      );
+      uploadResults.picture = picturePath;
+    }
+
+    // Handle chief recommendations upload
+    if (files.recommendationsfromchief) {
+      const chiefRecommendationsPath = await handleVillageHeadFileUpdate(
+        files.recommendationsfromchief,
+        "recommendationsfromchief",
+        currentFilePath
+      );
+      uploadResults.recommendationsfromchief = chiefRecommendationsPath;
+    }
+
+    // Handle headman recommendations upload
+    if (files.recommendationsfromheadman) {
+      const headmanRecommendationsPath = await handleVillageHeadFileUpdate(
+        files.recommendationsfromheadman,
+        "recommendationsfromheadman",
+        currentFilePath
+      );
+      uploadResults.recommendationsfromheadman = headmanRecommendationsPath;
+    }
+
+    // Handle supporting document upload
+    if (files.supporting_document_ddc) {
+      const supportingDocPath = await handleVillageHeadFileUpdate(
+        files.supporting_document_ddc,
+        "supporting_document_ddc",
+        currentFilePath
+      );
+      uploadResults.supporting_document_ddc = supportingDocPath;
+    }
+
+    // Update database with new file paths
+    const response = await fetch(
+      `${BASE_URL}/villageheads/${villageHeadId}/documents`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: JSON.stringify(uploadResults),
+      }
+    );
+
+    if (!response.ok) {
+      const errorData: ErrorResponse = await response.json();
+      throw new Error(errorData.message || "Failed to update file paths");
+    }
+
+    return uploadResults;
+  } catch (error) {
+    console.error("Error updating village head files:", error);
     throw error;
   }
 };

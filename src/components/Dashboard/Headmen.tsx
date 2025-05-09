@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 // Change this line
 import { HeadmanDetailsModal } from "./HeadmanDetailsModal";
+import { HeadmanEditModal } from "./HeadmanEditModal";
 import { TraditionalLeader } from "@/lib/types";
 import { getHeadmen } from "@/lib/apiService";
 import {
@@ -43,6 +44,7 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
+import { Snackbar } from "@/components/ui/snackbar";
 
 const Headmen = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -53,6 +55,13 @@ const Headmen = () => {
   const [pageSize, setPageSize] = useState(20);
   const [selectedHeadman, setSelectedHeadman] =
     useState<TraditionalLeader | null>(null);
+  const [editingHeadman, setEditingHeadman] =
+    useState<TraditionalLeader | null>(null);
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: "",
+    variant: "default" as "default" | "success" | "error",
+  });
 
   const [allHeadmen, setAllHeadmen] = useState<TraditionalLeader[]>([]);
   const [loading, setLoading] = useState(true);
@@ -74,6 +83,25 @@ const Headmen = () => {
 
     fetchHeadmen();
   }, []);
+
+  const showMessage = (message: string, variant: "success" | "error") => {
+    setSnackbar({
+      open: true,
+      message,
+      variant,
+    });
+  };
+
+  const refreshHeadmen = async () => {
+    try {
+      const data = await getHeadmen(
+        provinceFilter === "all" ? undefined : provinceFilter
+      );
+      setAllHeadmen(data);
+    } catch (error) {
+      console.error("Error refreshing headmen:", error);
+    }
+  };
 
   // Stats calculation
   const activeHeadmen = allHeadmen.filter(
@@ -196,6 +224,15 @@ const Headmen = () => {
           onClose={() => setSelectedHeadman(null)}
         />
       )}
+      {editingHeadman && (
+        <HeadmanEditModal
+          headman={editingHeadman}
+          isOpen={!!editingHeadman}
+          onClose={() => setEditingHeadman(null)}
+          onUpdate={refreshHeadmen}
+          onShowMessage={showMessage}
+        />
+      )}
 
       <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 px-6 pt-6">
@@ -265,12 +302,20 @@ const Headmen = () => {
                     </span>
                   </TableCell>
                   <TableCell className="text-right">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => setSelectedHeadman(headman)}>
-                      View Details
-                    </Button>
+                    <div className="flex justify-end gap-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setSelectedHeadman(headman)}>
+                        View
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setEditingHeadman(headman)}>
+                        Edit
+                      </Button>
+                    </div>
                   </TableCell>
                 </TableRow>
               ))}
@@ -335,6 +380,13 @@ const Headmen = () => {
         </CardFooter>
       </Card>
       {renderExportModal()}
+      <Snackbar
+        open={snackbar.open}
+        message={snackbar.message}
+        variant={snackbar.variant}
+        onClose={() => setSnackbar((prev) => ({ ...prev, open: false }))}
+        duration={3000}
+      />
     </div>
   );
 };

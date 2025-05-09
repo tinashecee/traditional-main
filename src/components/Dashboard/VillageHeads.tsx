@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { VillageHeadsDetailsModal } from "./VillageHeadsDetailsModal";
+import { VillageHeadEditModal } from "./VillageHeadEditModal";
 import { TraditionalLeader } from "../../lib/types";
 import { getVillageHeads } from "../../lib/apiService";
 import {
@@ -57,6 +58,21 @@ const VillageHeads = () => {
   );
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [editingVillageHead, setEditingVillageHead] =
+    useState<TraditionalLeader | null>(null);
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: "",
+    variant: "default" as "default" | "success" | "error",
+  });
+
+  const showMessage = (message: string, variant: "success" | "error") => {
+    setSnackbar({
+      open: true,
+      message,
+      variant,
+    });
+  };
 
   useEffect(() => {
     const fetchVillageHeads = async () => {
@@ -200,6 +216,16 @@ const VillageHeads = () => {
     return <div className="text-red-500 text-center">{error}</div>;
   }
 
+  const refreshVillageHeads = async () => {
+    try {
+      const data = await getVillageHeads();
+      setAllVillageHeads(Array.isArray(data) ? data : []);
+    } catch (error) {
+      console.error("Error refreshing village heads:", error);
+      showMessage("Failed to refresh village heads", "error");
+    }
+  };
+
   return (
     <div className="space-y-6">
       {renderStatsCards()}
@@ -208,6 +234,16 @@ const VillageHeads = () => {
         isOpen={!!selectedVillageHead}
         onClose={() => setSelectedVillageHead(null)}
       />
+
+      {editingVillageHead && (
+        <VillageHeadEditModal
+          villageHead={editingVillageHead}
+          isOpen={!!editingVillageHead}
+          onClose={() => setEditingVillageHead(null)}
+          onUpdate={refreshVillageHeads}
+          onShowMessage={showMessage}
+        />
+      )}
 
       <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 px-6 pt-6">
@@ -275,12 +311,20 @@ const VillageHeads = () => {
                     </span>
                   </TableCell>
                   <TableCell className="text-right">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => setSelectedVillageHead(villageHead)}>
-                      View Details
-                    </Button>
+                    <div className="flex justify-end gap-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setSelectedVillageHead(villageHead)}>
+                        View
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setEditingVillageHead(villageHead)}>
+                        Edit
+                      </Button>
+                    </div>
                   </TableCell>
                 </TableRow>
               ))}
