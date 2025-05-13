@@ -11,6 +11,7 @@ import {
   ResetPasswordResponse,
   TraditionalLeader,
   TraditionalArea,
+  MetricsLeader,
 } from "./types";
 
 const BASE_URL = "https://tlssapi.soxfort.com";
@@ -976,6 +977,83 @@ export const updateVillageHeadFiles = async (
     return uploadResults;
   } catch (error) {
     console.error("Error updating village head files:", error);
+    throw error;
+  }
+};
+
+export const getRecentAppointments = async (): Promise<MetricsLeader[]> => {
+  try {
+    const response = await fetch(`${BASE_URL}/metrics/recent-appointments`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch recent appointments");
+    }
+    const data = await response.json();
+    console.log("Recent appointments data:", data); // Debugging line
+    return data[0] || [];
+  } catch (error) {
+    console.error("Error fetching recent appointments:", error);
+    throw error;
+  }
+};
+
+export const getRecentDeathsRemovals = async (): Promise<MetricsLeader[]> => {
+  try {
+    const response = await fetch(`${BASE_URL}/metrics/deaths-removals`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch deaths and removals");
+    }
+    const data = await response.json();
+    return data[0] || [];
+  } catch (error) {
+    console.error("Error fetching deaths and removals:", error);
+    throw error;
+  }
+};
+
+export const getActiveLeadersCounts = async () => {
+  try {
+    const response = await fetch(`${BASE_URL}/metrics/active-leaders`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch active leaders counts");
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error fetching active leaders counts:", error);
+    throw error;
+  }
+};
+
+export const getProvinceWiseCounts = async () => {
+  try {
+    const response = await fetch(`${BASE_URL}/metrics/province-wise-counts`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch province-wise counts");
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error fetching province-wise counts:", error);
     throw error;
   }
 };

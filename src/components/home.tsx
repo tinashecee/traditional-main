@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -27,10 +27,38 @@ import Headmanships from "./Dashboard/Headmanships";
 import Headmen from "./Dashboard/Headmen";
 import Chiefs from "./Dashboard/Chiefs";
 import VillageHeads from "./Dashboard/VillageHeads";
+import {
+  getRecentAppointments,
+  getRecentDeathsRemovals,
+} from "../lib/apiService";
+import { MetricsLeader } from "../lib/types";
 
 const HomePage = () => {
   const [activeTab, setActiveTab] = React.useState("dashboard");
   const { logout, userData } = useAuth();
+
+  const [recentAppointments, setRecentAppointments] = useState<MetricsLeader[]>(
+    []
+  );
+  const [deathsRemovals, setDeathsRemovals] = useState<MetricsLeader[]>([]);
+
+  useEffect(() => {
+    const fetchMetrics = async () => {
+      try {
+        const [appointmentsData, deathsRemovalsData] = await Promise.all([
+          getRecentAppointments(),
+          getRecentDeathsRemovals(),
+        ]);
+
+        setRecentAppointments(appointmentsData);
+        setDeathsRemovals(deathsRemovalsData);
+      } catch (error) {
+        console.error("Error fetching metrics:", error);
+      }
+    };
+
+    fetchMetrics();
+  }, []);
 
   const handleLogout = () => {
     logout();
@@ -196,32 +224,40 @@ const HomePage = () => {
 
               <MetricsOverview />
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-2">
                 <Card>
                   <CardHeader>
                     <CardTitle>Recent Appointments</CardTitle>
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-4">
-                      {[1, 2, 3].map((i) => (
+                      {recentAppointments?.map((leader, index) => (
                         <div
-                          key={i}
-                          className="flex items-center gap-4 p-2 rounded-md hover:bg-accent">
-                          <Avatar>
-                            <AvatarImage
-                              src={`https://api.dicebear.com/7.x/avataaars/svg?seed=person${i}`}
-                            />
-                            <AvatarFallback>P{i}</AvatarFallback>
-                          </Avatar>
-                          <div className="flex-1">
-                            <p className="font-medium">Chief Mutasa</p>
-                            <p className="text-sm text-muted-foreground">
-                              Appointed on {new Date().toLocaleDateString()}
+                          key={`appointment-${leader?.type || "unknown"}-${
+                            leader?.leader_id || index
+                          }`}
+                          className="flex justify-between items-center">
+                          <div>
+                            <p className="font-medium">
+                              {leader?.incumbent || "Unknown"}
+                            </p>
+                            <p className="text-sm text-gray-500">
+                              {leader?.type
+                                ? `${leader.type
+                                    .charAt(0)
+                                    .toUpperCase()}${leader.type.slice(1)}`
+                                : "Unknown"}{" "}
+                              - {leader?.district || "N/A"},{" "}
+                              {leader?.province || "N/A"}
                             </p>
                           </div>
-                          <Button variant="ghost" size="sm">
-                            View
-                          </Button>
+                          <p className="text-sm text-gray-500">
+                            {leader?.dateofappointment
+                              ? new Date(
+                                  leader.dateofappointment
+                                ).toLocaleDateString()
+                              : "N/A"}
+                          </p>
                         </div>
                       ))}
                     </div>
@@ -230,31 +266,45 @@ const HomePage = () => {
 
                 <Card>
                   <CardHeader>
-                    <CardTitle>Pending Approvals</CardTitle>
+                    <CardTitle>Recent Deaths/Removals</CardTitle>
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-4">
-                      {[1, 2, 3].map((i) => (
-                        <div
-                          key={i}
-                          className="flex items-center gap-4 p-2 rounded-md hover:bg-accent">
-                          <Avatar>
-                            <AvatarImage
-                              src={`https://api.dicebear.com/7.x/avataaars/svg?seed=pending${i}`}
-                            />
-                            <AvatarFallback>P{i}</AvatarFallback>
-                          </Avatar>
-                          <div className="flex-1">
-                            <p className="font-medium">Headman Nyakudya</p>
-                            <p className="text-sm text-muted-foreground">
-                              Awaiting provincial approval
+                      {deathsRemovals.length > 0 ? (
+                        deathsRemovals.map((leader, index) => (
+                          <div
+                            key={`removal-${leader?.type || "unknown"}-${
+                              leader?.leader_id || index
+                            }`}
+                            className="flex justify-between items-center">
+                            <div>
+                              <p className="font-medium">
+                                {leader?.incumbent || "Unknown"}
+                              </p>
+                              <p className="text-sm text-gray-500">
+                                {leader?.type
+                                  ? `${leader.type
+                                      .charAt(0)
+                                      .toUpperCase()}${leader.type.slice(1)}`
+                                  : "Unknown"}{" "}
+                                - {leader?.district || "N/A"},{" "}
+                                {leader?.province || "N/A"}
+                              </p>
+                            </div>
+                            <p className="text-sm text-gray-500">
+                              {leader?.dateofdeathorremoval
+                                ? new Date(
+                                    leader.dateofdeathorremoval
+                                  ).toLocaleDateString()
+                                : "N/A"}
                             </p>
                           </div>
-                          <Button variant="outline" size="sm">
-                            Review
-                          </Button>
-                        </div>
-                      ))}
+                        ))
+                      ) : (
+                        <p className="text-muted-foreground">
+                          No recent deaths/removals
+                        </p>
+                      )}
                     </div>
                   </CardContent>
                 </Card>

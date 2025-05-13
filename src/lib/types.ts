@@ -51,9 +51,11 @@ export interface TraditionalLeader {
   headman_id?: string;
   villagehead_id?: string;
   id_number?: string;
-  incumbent?: string;
-  district?: string;
-  province?: string;
+  leader_id?: string;
+  type?: "chief" | "headman" | "villagehead";
+  incumbent: string;
+  district: string;
+  province: string;
   chieftainship?: string;
   headmanship?: string;
   villageship?: string;
@@ -62,7 +64,7 @@ export interface TraditionalLeader {
   ecnumber?: string;
   gender?: string;
   dateofbirth?: string; // Consider using Date type after parsing
-  dateofappointment?: string; // Consider using Date type after parsing
+  dateofappointment?: string;
   status?: string;
   bank?: string;
   accountnumber?: string;
@@ -74,7 +76,7 @@ export interface TraditionalLeader {
   offspring?: string;
   car_reg_no?: string;
   dateofissue?: string; // Consider using Date type after parsing
-  dateofdeathorremoval?: string; // Consider using Date type after parsing
+  dateofdeathorremoval?: string;
   physicalladdress?: string;
   relationshiptolastincumbent?: string;
   lastincumbentname?: string;
@@ -88,4 +90,19 @@ export interface TraditionalLeader {
   recommendationsfromchief?: string;
   supporting_document_ddc?: string;
   appointed_by?: string;
+}
+
+export interface MetricsLeader {
+  type?: "chief" | "headman" | "villagehead";
+  leader_id?: string;
+  incumbent: string;
+  dateofappointment?: string;
+  dateofdeathorremoval?: string;
+  province?: string;
+  district?: string;
+}
+
+export interface MetricsResponse {
+  appointments: MetricsLeader[];
+  removals: MetricsLeader[];
 }

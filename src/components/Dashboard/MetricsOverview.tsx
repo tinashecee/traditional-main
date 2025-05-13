@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Card,
   CardContent,
@@ -16,6 +16,10 @@ import {
   AlertTriangle,
 } from "lucide-react";
 import { BarChart } from "@/components/ui/bar-chart";
+import {
+  getActiveLeadersCounts,
+  getProvinceWiseCounts,
+} from "@/lib/apiService";
 
 interface MetricCardProps {
   title: string;
@@ -54,9 +58,14 @@ const MetricCard = ({
             <ArrowDownRight className="mr-1 h-4 w-4 text-red-500" />
           )}
           <p
-            className={`text-xs ${trend === "up" ? "text-emerald-500" : trend === "down" ? "text-red-500" : "text-muted-foreground"}`}
-          >
-            {trendValue} {description}
+            className={`text-xs ${
+              trend === "up"
+                ? "text-emerald-500"
+                : trend === "down"
+                ? "text-red-500"
+                : "text-muted-foreground"
+            }`}>
+            {description}
           </p>
         </div>
       </CardContent>
@@ -65,31 +74,63 @@ const MetricCard = ({
 };
 
 const MetricsOverview = () => {
-  // Mock data - in a real application, this would come from an API or state management
+  const [leadersCounts, setLeadersCounts] = useState({
+    chiefs: 0,
+    headmen: 0,
+    villageheads: 0,
+  });
+
+  const [provinceWiseCounts, setProvinceWiseCounts] = useState({
+    chiefs: {},
+    headmen: {},
+    villageheads: {},
+  });
+
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchAllCounts = async () => {
+      try {
+        const [activeCounts, provinceCounts] = await Promise.all([
+          getActiveLeadersCounts(),
+          getProvinceWiseCounts(),
+        ]);
+        setLeadersCounts(activeCounts);
+        setProvinceWiseCounts(provinceCounts);
+      } catch (error) {
+        console.error("Failed to fetch counts:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchAllCounts();
+  }, []);
+
   const metrics = {
     overall: [
       {
         title: "Total Chiefs",
-        value: "271",
-        description: "from last month",
-        trend: "up" as const,
-        trendValue: "2.5%",
+        value: isLoading
+          ? "Loading..."
+          : (leadersCounts?.chiefs ?? 0).toString(),
+        description: "active chiefs",
         icon: <Crown className="h-4 w-4" />,
       },
       {
         title: "Total Headmen",
-        value: "1,842",
-        description: "from last month",
-        trend: "up" as const,
-        trendValue: "1.2%",
+        value: isLoading
+          ? "Loading..."
+          : (leadersCounts?.headmen ?? 0).toString(),
+        description: "active headmen",
         icon: <Users className="h-4 w-4" />,
       },
       {
         title: "Total Village Heads",
-        value: "25,367",
-        description: "from last month",
-        trend: "up" as const,
-        trendValue: "0.8%",
+        value: isLoading
+          ? "Loading..."
+          : (leadersCounts?.villageheads ?? 0).toString(),
+        description: "active village heads",
         icon: <Home className="h-4 w-4" />,
       },
       {
@@ -99,39 +140,6 @@ const MetricsOverview = () => {
         trend: "down" as const,
         trendValue: "12%",
         icon: <AlertTriangle className="h-4 w-4" />,
-      },
-    ],
-    appointments: [
-      {
-        title: "Pending Appointments",
-        value: "18",
-        description: "awaiting approval",
-        trend: "neutral" as const,
-        icon: <Crown className="h-4 w-4" />,
-      },
-      {
-        title: "Approved This Month",
-        value: "7",
-        description: "new appointments",
-        trend: "up" as const,
-        trendValue: "40%",
-        icon: <Users className="h-4 w-4" />,
-      },
-      {
-        title: "Rejected Applications",
-        value: "3",
-        description: "this quarter",
-        trend: "down" as const,
-        trendValue: "25%",
-        icon: <AlertTriangle className="h-4 w-4" />,
-      },
-      {
-        title: "Average Approval Time",
-        value: "42 days",
-        description: "processing time",
-        trend: "down" as const,
-        trendValue: "5%",
-        icon: <Home className="h-4 w-4" />,
       },
     ],
     regional: [
@@ -177,9 +185,11 @@ const MetricsOverview = () => {
       <Tabs defaultValue="overall" className="space-y-4">
         <TabsList>
           <TabsTrigger value="overall">Overall Statistics</TabsTrigger>
-          <TabsTrigger value="appointments">Appointment Status</TabsTrigger>
-          <TabsTrigger value="regional">Regional Breakdown</TabsTrigger>
-          <TabsTrigger value="provincial">Provincial Breakdown</TabsTrigger>
+          <TabsTrigger value="chiefs">Chiefs by Province</TabsTrigger>
+          <TabsTrigger value="headmen">Headmen by Province</TabsTrigger>
+          <TabsTrigger value="villageheads">
+            Village Heads by Province
+          </TabsTrigger>
         </TabsList>
 
         <TabsContent value="overall" className="space-y-4">
@@ -190,48 +200,51 @@ const MetricsOverview = () => {
           </div>
         </TabsContent>
 
-        <TabsContent value="appointments" className="space-y-4">
+        <TabsContent value="chiefs" className="space-y-4">
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-            {metrics.appointments.map((metric, index) => (
-              <MetricCard key={index} {...metric} />
-            ))}
+            {Object.entries(provinceWiseCounts.chiefs).map(
+              ([province, count]) => (
+                <MetricCard
+                  key={province}
+                  title={province}
+                  value={isLoading ? "Loading..." : count.toString()}
+                  description="active chiefs"
+                  icon={<Crown className="h-4 w-4" />}
+                />
+              )
+            )}
           </div>
         </TabsContent>
 
-        <TabsContent value="regional" className="space-y-4">
+        <TabsContent value="headmen" className="space-y-4">
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-            {metrics.regional.map((metric, index) => (
-              <MetricCard key={index} {...metric} />
-            ))}
+            {Object.entries(provinceWiseCounts.headmen).map(
+              ([province, count]) => (
+                <MetricCard
+                  key={province}
+                  title={province}
+                  value={isLoading ? "Loading..." : count.toString()}
+                  description="active headmen"
+                  icon={<Users className="h-4 w-4" />}
+                />
+              )
+            )}
           </div>
         </TabsContent>
 
-        <TabsContent value="provincial" className="space-y-4">
-          <div className="grid gap-4 md:grid-cols-1 lg:grid-cols-3">
-            <div className="bg-white p-4 rounded-lg shadow-sm">
-              <BarChart
-                title="Chiefs by Province"
-                labels={["Mashonaland", "Matabeleland", "Manicaland", "Midlands"]}
-                data={[87, 64, 52, 68]}
-                backgroundColor="rgba(59, 130, 246, 0.5)"
-              />
-            </div>
-            <div className="bg-white p-4 rounded-lg shadow-sm">
-              <BarChart
-                title="Headmen by Province"
-                labels={["Mashonaland", "Matabeleland", "Manicaland", "Midlands"]}
-                data={[342, 198, 187, 256]}
-                backgroundColor="rgba(16, 185, 129, 0.5)"
-              />
-            </div>
-            <div className="bg-white p-4 rounded-lg shadow-sm">
-              <BarChart
-                title="Village Heads by Province"
-                labels={["Mashonaland", "Matabeleland", "Manicaland", "Midlands"]}
-                data={[1250, 980, 876, 1024]}
-                backgroundColor="rgba(245, 158, 11, 0.5)"
-              />
-            </div>
+        <TabsContent value="villageheads" className="space-y-4">
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+            {Object.entries(provinceWiseCounts.villageheads).map(
+              ([province, count]) => (
+                <MetricCard
+                  key={province}
+                  title={province}
+                  value={isLoading ? "Loading..." : count.toString()}
+                  description="active village heads"
+                  icon={<Home className="h-4 w-4" />}
+                />
+              )
+            )}
           </div>
         </TabsContent>
       </Tabs>

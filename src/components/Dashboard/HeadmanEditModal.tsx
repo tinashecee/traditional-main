@@ -195,7 +195,7 @@ export function HeadmanEditModal({
             label="Status"
             value={headman.status}
             type="select"
-            options={["SUBSTANTIVE", "ACTING"]}
+            options={["SUBSTANTIVE", "ACTING", "DECEASED", "REMOVED"]}
             onEdit={() => setEditingField("status")}
             isEditing={editingField === "status"}
             onSave={(value) => handleSave("status", value)}
